@@ -3,9 +3,9 @@
   var $ = function (id) { return document.getElementById(id); };
   var PAGE = 200, all = [], res = [], shown = 0, grp = '', picked = {}, ex = {}, SEL = {}, SUB = {}, G = {}, GI = {}, groups = [];
   var HUE = window.HUE || {};
-  // RSS の分類（大カテゴリ）の印
+  // 大カテゴリの印
   var AB = {};
-  ['政治:政', '国際:国', '経済:経', '社会:社', '地方・地域:地', '中国・韓国:中韓', '訃報・人事:訃', 'IT:IT', 'サイエンス:科', 'エンタメ:エ', 'スポーツ:ス', 'その他:他'].forEach(function (x) { x = x.split(':'); AB[x[0]] = x[1]; });
+  ['首相動静:動', '世論調査:調', '分類なし:他'].forEach(function (x) { x = x.split(':'); AB[x[0]] = x[1]; });
   var WD = '日月火水木金土';
   function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function norm(s) { return String(s || '').normalize('NFKC').toLowerCase().replace(/[\s・!！?？:：~〜～\-－「」『』【】]/g, ''); }

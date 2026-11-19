@@ -5,12 +5,13 @@
 入力は data/rss.jsonl（rss.py が30分ごとに足す）。絞り込みの規則は rules.py。
 - 重複を除く：同じリンク（正規化したもの）は1本。同じサイトで見出しがまったく同じ記事も、前後3日以内なら1本にする。
 - 同じ話題をまとめる：違うサイトの記事で、見出しの2文字ずつの組の重なりが 0.25 以上か、「」『』の中身（4文字以上）が同じで 0.12 以上重なれば1行にまとめる。前後4日以内。第2弾と第3弾、前編と後編などは分ける。
+大カテゴリ（首相動静・世論調査・分類なし）は見出しの語で決める（rules.py）。
 書き出すのは日付・時刻・見出し・リンク・サイト・大カテゴリ・ジャンル（説明文は data/rss.jsonl にだけ残す）。
 """
 import datetime, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from rules import nf, keep, cat, genre, CAT_ORDER, GENRE_ORDER
+from rules import nf, keep, cats, genre, CAT_ORDER, GENRE_ORDER
 from rss import canon
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'data', 'newsall.json')
@@ -34,8 +35,7 @@ for r in sorted(rows, key=lambda r: (r.get('d', ''), r.get('h', ''))):
     if dd is not None and r.get('d') and abs(day(r['d']) - dd) <= 3: continue
     if r.get('d'): SEEN_T[tk] = day(r['d'])
     if not keep(t, r.get('desc', ''), r.get('s', '')): continue
-    c = cat(r.get('feed'))
-    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': [c], 'j': genre(t, c)})
+    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': cats(t), 'j': genre(t)})
 
 # ---- 同じ話題の記事を1行にまとめる
 def bigr(t):
@@ -64,7 +64,9 @@ for c in clusters:
     m = max(es, key=lambda x: len(x['t']))   # 代表：見出しのいちばん長いもの
     first = min(es, key=lambda x: (x['d'] or '9', x['h'] or '99'))
     r = dict(m); r['d'], r['h'] = first['d'], first['h']   # 日付・時刻はいちばん早く伝えた記事
-    r['g'] = sorted({x for e in es for x in e['g']}, key=lambda x: CAT_ORDER.index(x) if x in CAT_ORDER else 99)
+    g = {x for e in es for x in e['g']}
+    if len(g) > 1: g.discard('分類なし')   # まとめた記事のどれかが分類に入れば「分類なし」は外す
+    r['g'] = sorted(g, key=lambda x: CAT_ORDER.index(x) if x in CAT_ORDER else 99); r['j'] = r['g'][0]
     if len(es) > 1: r['o'] = [[x['s'], x['u'], x['t']] for x in es if x is not m]; r['c'] = len(es)
     out.append(r)
 items = sorted(out, key=lambda e: (e['d'], e['h'], e['u']), reverse=True)
