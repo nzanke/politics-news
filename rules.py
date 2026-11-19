@@ -36,13 +36,15 @@ CATS_DESC = [
                        r'|' + PARTY + r'の[^。、「」\s]{0,20}?会は\d{1,2}日、'   # 「（政党名）の〜会は（数字）日、」（同）
                        r'|' + PARTY + r'の[^。「」]{0,20}?(?:政調会長|総務会長|副代表|副総裁|幹事長|参院議員会長)は[^。]*?た。'   # 「（政党名）の〜幹事長などは〜た。」（同）
                        r'|' + PARTY + r'の?(?:政調会長|総務会長|副代表|副総裁|幹事長|参院議員会長)の[^。、「」]{1,15}?は[^。]*?た。')),   # 「（政党名）副総裁の〜氏は〜た。」（同）
+    ('首相', re.compile(r'高市早苗首相は\d{1,2}日、[^。]*?た。')),   # 「高市早苗首相は（数字）日、〜た。」という文がある（依頼者の判断、2026-11-20）
     ('官房長官', re.compile(r'官房長官は[^。]*?会見で[^。]*?た。')),   # 「〜官房長官は〜会見で〜た。」という文がある（依頼者の判断、2026-11-20）
 ]
 NONE = '分類なし'
-CAT_ORDER = [c for c, _ in CATS] + ['海外'] + [c for c, _ in CATS_DESC] + [NONE]
+CAT_ORDER = list(dict.fromkeys([c for c, _ in CATS] + ['海外'] + [c for c, _ in CATS_DESC] + [NONE]))   # 同じ名前は1つに
 def cats(t, desc=''):
     t, desc = nf(t), nf(desc)
-    return [c for c, rx in CATS if rx.search(t)] + (['海外'] if FOREIGN_END.search(t) else []) + [c for c, rx in CATS_DESC if rx.search(desc)] or [NONE]
+    out = [c for c, rx in CATS if rx.search(t)] + (['海外'] if FOREIGN_END.search(t) else []) + [c for c, rx in CATS_DESC if rx.search(desc)]
+    return sorted(set(out), key=CAT_ORDER.index) or [NONE]   # 見出しと抜粋の両方で同じカテゴリに当たっても1つ
 
 # ---- 落とす規則。見出し（t）・説明文（desc）・サイト名（site）で決める。当たれば載せない
 DROP_TITLE = re.compile(r'【速報】')   # 【速報】の記事は載せない（依頼者の判断、2026-11-20）
