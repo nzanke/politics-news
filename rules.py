@@ -11,6 +11,7 @@ def nf(s): return unicodedata.normalize('NFKC', s or '')
 CATS = [
     ('首相動静', re.compile(r'首相動静')),
     ('世論調査', re.compile(r'世論調査')),
+    ('地方政治', re.compile(r'知事選')),
 ]
 NONE = '分類なし'
 CAT_ORDER = [c for c, _ in CATS] + [NONE]
