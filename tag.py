@@ -67,6 +67,7 @@ for c in clusters:
     g = {x for e in es for x in e['g']}
     if len(g) > 1: g.discard('分類なし')   # まとめた記事のどれかが分類に入れば「分類なし」は外す
     if len(g) > 1: g.discard('外国')   # 「外国」はほかのカテゴリに入らないときだけ（行の単位でも）
+    if '外国' in g: g.discard('外国'); g.add('海外')   # 外国は海外にまとめる（依頼者の判断、2026-11-20）
     r['g'] = sorted(g, key=lambda x: CAT_ORDER.index(x) if x in CAT_ORDER else 99); r['j'] = r['g'][0]
     if len(es) > 1: r['o'] = [[x['s'], x['u'], x['t']] for x in es if x is not m]; r['c'] = len(es)
     out.append(r)
