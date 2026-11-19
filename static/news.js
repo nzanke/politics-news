@@ -5,7 +5,7 @@
   var HUE = window.HUE || {};
   // 大カテゴリの印
   var AB = {};
-  ['首相動静:動', '世論調査:調', '地方政治:地', '国会:国', '首相:首', '政党:党', '官房長官:官', '海外:外', '分類なし:他'].forEach(function (x) { x = x.split(':'); AB[x[0]] = x[1]; });
+  ['首相動静:動', '世論調査:調', '地方政治:地', '国会:国', '首相:首', '政党:党', '官房長官:官', '海外:外', '外国:国外', '分類なし:他'].forEach(function (x) { x = x.split(':'); AB[x[0]] = x[1]; });
   var WD = '日月火水木金土';
   function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function norm(s) { return String(s || '').normalize('NFKC').toLowerCase().replace(/[\s・!！?？:：~〜～\-－「」『』【】]/g, ''); }

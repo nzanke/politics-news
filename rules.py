@@ -40,10 +40,12 @@ CATS_DESC = [
     ('官房長官', re.compile(r'官房長官は[^。]*?会見で[^。]*?た。')),   # 「〜官房長官は〜会見で〜た。」という文がある（依頼者の判断、2026-11-20）
 ]
 NONE = '分類なし'
-CAT_ORDER = list(dict.fromkeys([c for c, _ in CATS] + ['海外'] + [c for c, _ in CATS_DESC] + [NONE]))   # 同じ名前は1つに
+GAIKOKU = re.compile(r'【深セン時事】')
+CAT_ORDER = list(dict.fromkeys([c for c, _ in CATS] + ['海外'] + [c for c, _ in CATS_DESC] + ['外国', NONE]))   # 同じ名前は1つに
 def cats(t, desc=''):
     t, desc = nf(t), nf(desc)
     out = [c for c, rx in CATS if rx.search(t)] + (['海外'] if FOREIGN_END.search(t) else []) + [c for c, rx in CATS_DESC if rx.search(desc)]
+    if not out and GAIKOKU.search(desc): out = ['外国']   # ほかのカテゴリに入らず、抜粋に【深セン時事】がある記事（依頼者の判断、2026-11-20）
     return sorted(set(out), key=CAT_ORDER.index) or [NONE]   # 見出しと抜粋の両方で同じカテゴリに当たっても1つ
 
 # ---- 落とす規則。見出し（t）・説明文（desc）・サイト名（site）で決める。当たれば載せない
