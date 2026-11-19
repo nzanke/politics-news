@@ -15,11 +15,16 @@ CATS = [
     ('国会', re.compile(r'憲法審')),
     ('首相', re.compile(r'^\s*高市首相、')),   # 見出しが「高市首相、」で始まる記事
 ]
+# 説明文（RSS の抜粋）で決める大カテゴリ
+PARTY = r'(?:自由民主党|自民党|自民|立憲民主党|立民|立憲|公明党|公明|日本維新の会|維新の会|維新|国民民主党|国民民主|日本共産党|共産党|れいわ新選組|れいわ|社会民主党|社民党|参政党|日本保守党|保守党|チームみらい|減税日本|有志の会)'
+CATS_DESC = [
+    ('政党', re.compile(r'(?:^|[。」\s])' + PARTY + r'は[^。]*?した。')),   # 「（政党名）は〜した。」という文がある（依頼者の判断、2026-11-20）
+]
 NONE = '分類なし'
-CAT_ORDER = [c for c, _ in CATS] + [NONE]
-def cats(t):
-    t = nf(t)
-    return [c for c, rx in CATS if rx.search(t)] or [NONE]
+CAT_ORDER = [c for c, _ in CATS] + [c for c, _ in CATS_DESC] + [NONE]
+def cats(t, desc=''):
+    t, desc = nf(t), nf(desc)
+    return [c for c, rx in CATS if rx.search(t)] + [c for c, rx in CATS_DESC if rx.search(desc)] or [NONE]
 
 # ---- 落とす規則。見出し（t）・説明文（desc）・サイト名（site）で決める。当たれば載せない
 DROP_TITLE = re.compile(r'【速報】')   # 【速報】の記事は載せない（依頼者の判断、2026-11-20）
@@ -39,5 +44,5 @@ def keep(t, desc='', site=''):
 
 # ---- 今日の新着ページのジャンル。いまは大カテゴリと同じ（記事の最初の大カテゴリ）
 GENRE_ORDER = CAT_ORDER
-def genre(t):
-    return cats(t)[0]
+def genre(t, desc=''):
+    return cats(t, desc)[0]

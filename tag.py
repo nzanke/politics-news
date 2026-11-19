@@ -5,7 +5,7 @@
 入力は data/rss.jsonl（rss.py が30分ごとに足す）。絞り込みの規則は rules.py。
 - 重複を除く：同じリンク（正規化したもの）は1本。同じサイトで見出しがまったく同じ記事も、前後3日以内なら1本にする。
 - 同じ話題をまとめる：違うサイトの記事で、見出しの2文字ずつの組の重なりが 0.25 以上か、「」『』の中身（4文字以上）が同じで 0.12 以上重なれば1行にまとめる。前後4日以内。第2弾と第3弾、前編と後編などは分ける。
-大カテゴリ（首相動静・世論調査・分類なし）は見出しの語で決める（rules.py）。
+大カテゴリは見出しの語と、RSS の説明文（政党）で決める（rules.py）。
 書き出すのは日付・時刻・見出し・リンク・サイト・大カテゴリ・ジャンル（説明文は data/rss.jsonl にだけ残す）。
 """
 import datetime, json, os, re, sys
@@ -35,7 +35,7 @@ for r in sorted(rows, key=lambda r: (r.get('d', ''), r.get('h', ''))):
     if dd is not None and r.get('d') and abs(day(r['d']) - dd) <= 3: continue
     if r.get('d'): SEEN_T[tk] = day(r['d'])
     if not keep(t, r.get('desc', ''), r.get('s', '')): continue
-    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': cats(t), 'j': genre(t)})
+    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': cats(t, r.get('desc', '')), 'j': genre(t, r.get('desc', ''))})
 
 # ---- 同じ話題の記事を1行にまとめる
 def bigr(t):
