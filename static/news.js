@@ -17,7 +17,7 @@
     return '<li class="ur sr"><span class="ud">' + dd + '</span>' +
       '<span class="ic" style="--h:' + hue(i0) + '" title="' + esc(i0) + '">' + esc(AB[i0] || '他') + '</span>' +
       '<span class="sb"><a class="un" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(e.t) + '</a>' +
-      more + '</span><span class="st">' + esc(e.s) + (e.c ? '<button type="button" class="cn" aria-expanded="false" title="伝えた記事の数（押すと見出しを全部広げる）">' + e.c + '</button>' : '') + '</span></li>';
+      more + '</span><span class="st' + (e.c ? '' : ' nc') + '"><span class="sn">' + esc(e.s) + '</span>' + (e.c ? '<button type="button" class="cn" aria-expanded="false" title="伝えた記事の数（押すと見出しを全部広げる）">' + e.c + '</button>' : '') + '</span></li>';
   }
   document.addEventListener('click', function (ev) {   // 青い件数を押すと、同じ話題の見出しを広げる・たたむ
     var b = ev.target.closest && ev.target.closest('button.cn'); if (!b) return;

@@ -173,6 +173,17 @@ ul.ulist{list-style:none;padding:0;margin:0}
   .sr .sb{flex:1 1 auto}
   .sr .un{white-space:normal}
   .sr .st{display:none}
+  /* スマホ：印は日付の下に（行は増やさない）。サイト名は隠し、青い件数だけ右に出す */
+  .sr{display:grid;grid-template-columns:44px 1fr auto;grid-template-rows:auto 1fr;column-gap:8px;row-gap:2px;align-items:start}
+  .sr .ud{grid-column:1;grid-row:1;flex:none;text-align:right;line-height:1.3;margin-top:3px}
+  .sr .ic{grid-column:1;grid-row:2;justify-self:end;margin-top:0;min-width:20px;height:16px;font-size:9.5px;padding:0 3px}
+  .sr .sb{grid-column:2;grid-row:1/3}
+  .sr .st{display:block;grid-column:3;grid-row:1/3;max-width:none;margin:2px 0 0;padding:0}
+  .sr .st.nc{display:none}
+  .sr .st .sn{display:none}
+  .sr .st .cn{margin-left:0}
+  .sr{position:relative}
+  .sr .ud .left{position:absolute;left:0;top:30px;margin:0;font-size:9px;line-height:16px}   /* 「昨日」は印の左に（行を増やさない） */
 }
 .sr .tags .tvl,.sr .tags .also{margin-left:8px;font-size:12px;color:var(--muted)}
 .opts.scope .lb{color:var(--muted);margin-right:-6px}
