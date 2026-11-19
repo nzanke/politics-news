@@ -13,6 +13,7 @@ CATS = [
     ('世論調査', re.compile(r'世論調査')),
     ('地方政治', re.compile(r'知事選')),
     ('国会', re.compile(r'憲法審')),
+    ('首相', re.compile(r'^\s*高市首相、')),   # 見出しが「高市首相、」で始まる記事
 ]
 NONE = '分類なし'
 CAT_ORDER = [c for c, _ in CATS] + [NONE]
