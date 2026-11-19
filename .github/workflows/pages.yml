@@ -1,0 +1,50 @@
+name: サイトを組み立てて公開
+# 30分ごとに、RSS（feeds.json）の新しい記事を足し（rss.py）、絞り込み・まとめ（tag.py）→ 組み立て（build.py）→ 公開する。
+# 公開リポジトリなので実行時間は無料。GitHub の混み具合で数分〜数十分遅れることがある。
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: RSS を読む
+        run: python3 rss.py
+      - name: 絞り込んで一覧を作る
+        run: python3 tag.py
+      - name: データを保存する
+        run: |
+          git add data
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -q -m "一覧データを更新"
+            for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
+          fi
+      - run: python3 build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
