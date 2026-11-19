@@ -1,13 +1,9 @@
 {
-  "_説明": "政治ニュースで30分ごとに読む RSS（rss.py）。ceek.jp の「カテゴリ × キーワード」の検索 RSS。name は「カテゴリ×キーワード」の形にする（× の前がページの大カテゴリになる）。※いまは仮の一覧。依頼者が用意した一覧に差し替える。",
+  "_説明": "政治ニュースで30分ごとに読む RSS（rss.py）。ceek.jp の検索 RSS（カテゴリ・サイトなどで絞ったもの）。依頼者が用意する。name は「カテゴリ×中身」の形にする（× の前がページの大カテゴリになる）。",
   "feeds": [
-    {"name": "政治×政府", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20%E6%94%BF%E5%BA%9C&feed=1"},
-    {"name": "政治×首相", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20%E9%A6%96%E7%9B%B8&feed=1"},
-    {"name": "政治×国会", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20%E5%9B%BD%E4%BC%9A&feed=1"},
-    {"name": "政治×選挙", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20%E9%81%B8%E6%8C%99&feed=1"},
-    {"name": "政治×自民", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20%E8%87%AA%E6%B0%91&feed=1"},
-    {"name": "国際×首相", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Aworld%20%E9%A6%96%E7%9B%B8&feed=1"},
-    {"name": "経済×政府", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Abusiness%20%E6%94%BF%E5%BA%9C&feed=1"},
-    {"name": "地方・地域×知事", "url": "https://news.ceek.jp/search.cgi?q=category_id%3Alocal%20%E7%9F%A5%E4%BA%8B&feed=1"}
+    {
+      "name": "政治×時事通信・47NEWS",
+      "url": "https://news.ceek.jp/search.cgi?q=category_id%3Apolitics%20site%3Awww.jiji.com%2Cwww.47news.jp&feed=1"
+    }
   ]
 }
