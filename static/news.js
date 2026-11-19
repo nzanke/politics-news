@@ -12,7 +12,7 @@
   function hue(i) { return HUE[GI[i]] || 70; }
   function row(e, tm) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(e.d || ''), i0 = e.g[0];
-    var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' : m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>';
+    var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' + (e.d !== tm ? '<span class="left">昨日</span>' : '') : m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>';
     var more = e.o ? '<ul class="olist" hidden>' + e.o.map(function (o) { return '<li><a href="' + esc(o[1]) + '" target="_blank" rel="noopener">' + esc(o[2]) + '</a><span class="os">' + esc(o[0]) + '</span></li>'; }).join('') + '</ul>' : '';
     return '<li class="ur sr"><span class="ud">' + dd + '</span>' +
       '<span class="ic" style="--h:' + hue(i0) + '" title="' + esc(i0) + '">' + esc(AB[i0] || '他') + '</span>' +
@@ -28,18 +28,17 @@
   if ($('today')) {
     fetch(window.NEWS).then(function (r) { return r.json(); }).then(function (j) {
       (j.groups || []).forEach(function (x) { x[1].forEach(function (i) { GI[i] = x[0]; }); });   // 印の色
-      var t = new Date(), y = new Date(t.getTime() - 864e5), items = j.items || [], day = ymd(t), lbl = '今日';
-      var td = items.filter(function (e) { return e.d === day; });
-      if (!td.length) { day = ymd(y); lbl = '昨日'; td = items.filter(function (e) { return e.d === day; }); }
+      var t = new Date(), y = new Date(t.getTime() - 864e5), items = j.items || [], day = ymd(t), yday = ymd(y);
+      var td = items.filter(function (e) { return e.d === day || e.d === yday; });   // 今日と昨日の記事（新しい順）
       var gs = (window.GENRES || []).slice();
       td.forEach(function (e) { if (gs.indexOf(e.j) < 0) gs.push(e.j); });
       var h = '';
       gs.forEach(function (g) {
         var es = td.filter(function (e) { return e.j === g; }); if (!es.length) return;
-        h += '<section class="tsec"><h2 class="ug tg2">' + esc(g) + '<span class="n">' + es.length + ' 件</span></h2><ul class="ulist">' + es.map(function (e) { return row(e, 1); }).join('') + '</ul></section>';
+        h += '<section class="tsec"><h2 class="ug tg2">' + esc(g) + '<span class="n">' + es.length + ' 件</span></h2><ul class="ulist">' + es.map(function (e) { return row(e, day); }).join('') + '</ul></section>';
       });
-      var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(day);
-      $('tcount').innerHTML = esc(lbl) + '（' + (+m[2]) + '月' + (+m[3]) + '日・' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '）の新着 ' + td.length + ' 件　<a href="search.html">記事一覧へ</a>';
+      var md = function (d) { return (d.getMonth() + 1) + '月' + d.getDate() + '日・' + WD[d.getDay()]; };
+      $('tcount').innerHTML = '今日（' + md(t) + '）と昨日（' + md(y) + '）の新着 ' + td.length + ' 件　<a href="search.html">記事一覧へ</a>';
       $('today').innerHTML = h || '<p class="none">まだ記事がありません。</p>';
     });
     return;
