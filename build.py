@@ -25,7 +25,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">'
          # 半角の数字・英字・記号だけ BIZ UDゴシック（text= でその文字だけの字体にし、日本語は BIZ UDPゴシック に落ちる）
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&display=swap&text=%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~">')
-HUE = {'首相動静': 300, '世論調査': 150, '地方政治': 120, '国会': 30, '首相': 270, '政党': 200, '官房長官': 60, '分類なし': 250}
+HUE = {'首相動静': 300, '世論調査': 150, '地方政治': 120, '国会': 30, '首相': 270, '政党': 200, '官房長官': 60, '海外': 180, '分類なし': 250}
 GROUPS = NEWS['groups']
 
 from sitegenre import genre as sgenre, ORDER as GORDER
@@ -34,7 +34,7 @@ nsites = [x for x, _ in _sc.most_common()]
 SITES = [x for x in [[g, [[s, _sc[s]] for s in nsites if sgenre(s) == g]] for g in GORDER] if x[1]]
 
 ABOUT = '''<details class="about"><summary><span class="qi">?</span>このサイトについて</summary><div class="aboutbox"><p class="abh">このサイトについて</p>
-<p>政治に関するニュースを30分ごとに集め、分野ごとに絞り込めるようにした一覧です。上の色のボタンで分野を選ぶと、その分野の記事が出ます（1回で絞り込み、2回で除外、3回で解除）。分野は見出しの語と RSS の抜粋の文で機械的に決めています（首相動静・世論調査・地方政治・国会・首相・政党・官房長官。どれにも当たらない記事は「分類なし」）。【速報】の記事は載せていません。</p>
+<p>政治に関するニュースを30分ごとに集め、分野ごとに絞り込めるようにした一覧です。上の色のボタンで分野を選ぶと、その分野の記事が出ます（1回で絞り込み、2回で除外、3回で解除）。分野は見出しの語と RSS の抜粋の文で機械的に決めています（首相動静・世論調査・地方政治・国会・首相・海外・政党・官房長官。どれにも当たらない記事は「分類なし」）。【速報】の記事は載せていません。</p>
 <p><b>同じ話題</b>：違うサイトが同じ話題を伝えた記事は1行にまとめ、伝えた記事の数を青い数字で出しています。数字を押すと、ほかのサイトの見出しが広がります（見出しの似ている度合いで機械的にまとめているため、誤りが混じることがあります）。「伝えた記事の多い順」で、多くのサイトが伝えた話題から並べます。</p>
 <p><b>検索</b>：スペースで区切ると、すべての語を含むものだけを出します。</p>
 <p><b>載せているもの</b>：ニュースサイトの RSS で見つけた記事の日付・見出し・リンク。記事の本文は載せていません。</p>
