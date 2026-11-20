@@ -1,6 +1,8 @@
 name: サイトを組み立てて公開
 # 30分ごとに、RSS（feeds.json）の新しい記事を足し（rss.py）、絞り込み・まとめ（tag.py）→ 組み立て（build.py）→ 公開する。
-# 公開リポジトリなので実行時間は無料。GitHub の混み具合で数分〜数十分遅れることがある。
+# GitHub の定時実行（schedule）は混み具合で何時間も遅れたり飛ばされたりするので、公開のあと30分待って自分をもう一度動かす（next）。
+# 新しい実行が始まると、待っている前の実行は取り消される（concurrency）ので、流れはいつも1本。schedule は流れが切れたときの予備。
+# 公開リポジトリなので実行時間は無料。
 on:
   push:
     branches: [main]
@@ -11,6 +13,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  actions: write
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -48,3 +51,13 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  next:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 30分待って、もう一度動かす
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sleep 1680
+          gh workflow run pages.yml -R ${{ github.repository }} --ref main
