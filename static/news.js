@@ -12,7 +12,7 @@
   function hue(i) { return HUE[GI[i]] || 70; }
   function row(e, tm) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(e.d || ''), i0 = e.g[0];
-    var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' + (e.d !== tm ? '<span class="left">昨日</span>' : '') : m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>';
+    var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' + (e.d !== tm ? '<span class="left">昨日</span>' : '') : (e.h ? '<span class="hm">' + esc(e.h) + '</span>' : '') + (m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>');   // 記事一覧：日付と、左の空きに小さく薄く時刻
     var more = e.o ? '<ul class="olist" hidden>' + e.o.map(function (o) { return '<li><a href="' + esc(o[1]) + '" target="_blank" rel="noopener">' + esc(o[2]) + '</a><span class="os">' + esc(o[0]) + '</span></li>'; }).join('') + '</ul>' : '';
     return '<li class="ur sr"><span class="ud">' + dd + '</span>' +
       '<span class="ic" style="--h:' + hue(i0) + '" title="' + esc(i0) + '">' + esc(AB[i0] || '他') + '</span>' +
@@ -45,8 +45,7 @@
   }
   var lastG = '';
   function ymd(t) { return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2); }
-  var NEWD = (function () { var t = new Date(), y = new Date(t.getTime() - 864e5); return [ymd(t), ymd(y)]; })();   // 今日と昨日は「新着ニュース」として、月とは別の見出しに
-  function mon(e) { if (NEWD.indexOf((e.d || '').slice(0, 10)) >= 0) return '新着ニュース（今日・昨日）'; var m = /^(\d{4})-(\d{2})/.exec(e.d || ''); return m ? m[1] + '年' + (+m[2]) + '月' : '日付なし'; }
+  function mon(e) { var m = /^(\d{4})-(\d{2})/.exec(e.d || ''); return m ? m[1] + '年' + (+m[2]) + '月' : '日付なし'; }
   function render(more) {
     if (!more) { $('list').innerHTML = ''; shown = 0; lastG = ''; }
     var big = $('big').checked;
