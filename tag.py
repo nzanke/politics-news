@@ -4,7 +4,7 @@
 
 入力は data/rss.jsonl（rss.py が30分ごとに足す）。絞り込みの規則は rules.py。
 - 重複を除く：同じリンク（正規化したもの）は1本。同じサイトで見出しがまったく同じ記事も、前後3日以内なら1本にする。
-- 同じ話題をまとめる：違うサイトの記事で、見出しの2文字ずつの組の重なりが 0.25 以上か、「」『』の中身（4文字以上）が同じで 0.12 以上重なれば1行にまとめる。前後4日以内。第2弾と第3弾、前編と後編などは分ける。
+- 同じ話題をまとめる：違うサイトの記事で、見出しの2文字ずつの組の重なりが 0.25 以上か、「」『』の中身（4文字以上）が同じで 0.12 以上重なれば1行にまとめる。同じ日の記事なら、「」『』の中身が同じだけでまとめる。前後4日以内。第2弾と第3弾、前編と後編などは分ける。
 大カテゴリは見出しの語と、RSS の説明文（政党）で決める（rules.py）。
 書き出すのは日付・時刻・見出し・リンク・サイト・大カテゴリ・ジャンル（説明文は data/rss.jsonl にだけ残す）。
 """
@@ -55,6 +55,7 @@ for e in sorted(items, key=lambda e: (e['d'], e['h'], e['u'])):
         if mark(e['t']) != mark(c[0]['t']) and mark(e['t']) and mark(c[0]['t']): continue
         sim = 2 * len(b & c[2]) / max(1, len(b) + len(c[2]))
         if br & c[3] and sim >= SAME_BR: sim = max(sim, SAME)
+        if br & c[3] and e['d'] and e['d'] in {x['d'] for x in c[1]}: sim = max(sim, SAME)   # 同じ日の記事で「」『』の中が同じなら、見出しの重なりにかかわらず同じ話題（依頼者の判断、2026-11-21）
         if sim > bs: best, bs = c, sim
     if best and bs >= SAME: best[1].append(e); best[3] |= br
     else: clusters.append([e, [e], b, br])
