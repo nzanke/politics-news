@@ -45,6 +45,7 @@ CATS_DESC = [
     ('官房長官', re.compile(r'官房長官は[^。]*?会見で[^。]*?た。')),   # 「〜官房長官は〜会見で〜た。」という文がある（依頼者の判断、2026-11-20）
 ]
 NONE = '分類なし'
+OPPOSITION_HEAD = re.compile(r'^\s*(?:野党|立民|立憲|国民|国民民主|公明|共産|れいわ|社民|参政|保守|みらい)、')   # 野党の略称（自民・維新は与党なので入れない）
 GAIKOKU = re.compile(r'【[^】]{1,15}時事】')   # 【深セン時事】【ワシントン時事】など
 _ORD = list(dict.fromkeys([c for c, _ in CATS] + ['海外'] + [c for c, _ in CATS_DESC] + ['外国', NONE]))
 CAT_ORDER = [c for c in _ORD if c != '外国']   # 表示するカテゴリ。「外国」は判定の途中だけの名前で、tag.py が「海外」にまとめる（依頼者の判断、2026-11-20）   # 同じ名前は1つに
@@ -52,6 +53,7 @@ def cats(t, desc=''):
     t, desc = nf(t), nf(desc)
     out = [c for c, rx in CATS if rx.search(t)] + (['海外'] if FOREIGN_END.search(t) else []) + [c for c, rx in CATS_DESC if rx.search(desc)]
     if '党大会' in t: out.append('政党')   # 見出しに「党大会」（依頼者の判断、2026-11-20）
+    if OPPOSITION_HEAD.match(t): out.append('政党')   # 見出しが「野党、」「（野党の略称）、」で始まる（依頼者の判断、2026-11-21）
     if not out and GAIKOKU.search(desc): out = ['外国']   # ほかのカテゴリに入らず、抜粋に【〜時事】がある記事（依頼者の判断、2026-11-20）。表示は「海外」
     return sorted(set(out), key=_ORD.index) or [NONE]   # 見出しと抜粋の両方で同じカテゴリに当たっても1つ
 
