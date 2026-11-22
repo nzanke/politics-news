@@ -43,7 +43,9 @@ if __name__ == '__main__':
             except Exception: d = h = ''
             rec = {'u': u, 't': title, 'd': d, 'h': h, 's': site, 'cat': g('category'), 'feed': f['name'], 'desc': desc}
             idx[c] = len(rows); rows.append(rec); n += 1
-        print(f"{f['name']}：{n}件 追加"); added += n
+        ds = sorted(re.findall(r'<pubDate>(.*?)</pubDate>', x))
+        newest = max((email.utils.parsedate_to_datetime(d).astimezone(JST) for d in ds), default=None) if ds else None
+        print(f"{f['name']}：RSS に {len(re.findall(r'<item\\b', x))}件（いちばん新しい記事 {newest:%m-%d %H:%M}）、{n}件 追加" if newest else f"{f['name']}：RSS に記事なし"); added += n
         time.sleep(1)
     with open(OUT, 'w', encoding='utf-8') as out:
         for x in rows: out.write(json.dumps(x, ensure_ascii=False) + '\n')
