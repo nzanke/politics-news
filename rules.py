@@ -73,7 +73,7 @@ def cats(t, desc=''):
     if OPPOSITION_HEAD.match(t): out.append('政党')
     if '自民が' in t and re.search(r'自民党が[^。]*?る。', desc): out.append('政党')
     if '与党' in t and re.search(r'与党が[^。]*?る。', desc): out.append('政党')   # 見出しに「与党」、抜粋に「与党が〜る。」の両方（依頼者の判断、2026-11-23）   # 見出しに「自民が」、抜粋に「自民党が〜る。」の両方（依頼者の判断、2026-11-23）   # 見出しが「野党、」「（野党の略称）、」で始まる（依頼者の判断、2026-11-21）
-    if not out and GAIKOKU.search(desc): out = ['外国']   # ほかのカテゴリに入らず、抜粋に【〜時事】がある記事（依頼者の判断、2026-11-20）。表示は「海外」
+    if not out and (GAIKOKU.search(desc) or re.match(r'\s*【[^】]{1,15}共同】', desc)): out = ['外国']   # 抜粋が【〜共同】で始まるものも（依頼者の判断、2026-11-23）   # ほかのカテゴリに入らず、抜粋に【〜時事】がある記事（依頼者の判断、2026-11-20）。表示は「海外」
     return sorted(set(out), key=_ORD.index) or [NONE]   # 見出しと抜粋の両方で同じカテゴリに当たっても1つ
 
 # ---- 落とす規則。見出し（t）・説明文（desc）・サイト名（site）で決める。当たれば載せない
