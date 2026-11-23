@@ -70,7 +70,8 @@ def cats(t, desc=''):
     out = [c for c, rx in CATS if rx.search(t)] + (['海外'] if FOREIGN_END.search(t) else []) + [c for c, rx in CATS_DESC if rx.search(desc)]
     if '党大会' in t: out.append('政党')   # 見出しに「党大会」（依頼者の判断、2026-11-20）
     if re.search(r'野党「[^」]+」', t): out.append('政党')   # 見出しに「野党「〜」」（依頼者の判断、2026-11-21）
-    if OPPOSITION_HEAD.match(t): out.append('政党')   # 見出しが「野党、」「（野党の略称）、」で始まる（依頼者の判断、2026-11-21）
+    if OPPOSITION_HEAD.match(t): out.append('政党')
+    if '自民が' in t and re.search(r'自民党が[^。]*?る。', desc): out.append('政党')   # 見出しに「自民が」、抜粋に「自民党が〜る。」の両方（依頼者の判断、2026-11-23）   # 見出しが「野党、」「（野党の略称）、」で始まる（依頼者の判断、2026-11-21）
     if not out and GAIKOKU.search(desc): out = ['外国']   # ほかのカテゴリに入らず、抜粋に【〜時事】がある記事（依頼者の判断、2026-11-20）。表示は「海外」
     return sorted(set(out), key=_ORD.index) or [NONE]   # 見出しと抜粋の両方で同じカテゴリに当たっても1つ
 
