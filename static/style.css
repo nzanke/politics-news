@@ -342,3 +342,9 @@ h2.tg2 .n{font-size:11px;font-weight:400;color:var(--muted)}
   .sr .ud .hm{position:absolute;left:0;top:30px;margin:0;font-size:8.5px;line-height:16px;letter-spacing:-.02em}
   .sr .ud:has(.hm){flex-basis:auto}
 }
+
+/* スマホ：すべての行で見出しの後ろに媒体名（2文字）を小さく薄く */
+.sb .ss{display:none}
+@media (max-width:600px){
+  .sr .sb .ss{display:inline;margin-left:5px;font-size:10px;color:var(--muted);opacity:.8;white-space:nowrap}
+}

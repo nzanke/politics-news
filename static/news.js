@@ -10,13 +10,15 @@
   function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function norm(s) { return String(s || '').normalize('NFKC').toLowerCase().replace(/[\s・!！?？:：~〜～\-－「」『』【】]/g, ''); }
   function hue(i) { return HUE[GI[i]] || 70; }
+  // スマホで見出しの後ろに出す媒体名（2文字）
+  function short(s) { s = s || ''; return /共同/.test(s) ? '共同' : /時事/.test(s) ? '時事' : s.replace(/^.*:\s*/, '').slice(0, 2); }
   function row(e, tm) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(e.d || ''), i0 = e.g[0];
     var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' + (e.d !== tm ? '<span class="left">昨日</span>' : '') : (e.h ? '<span class="hm">' + esc(e.h) + '</span>' : '') + (m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>');   // 記事一覧：日付と、左の空きに小さく薄く時刻
     var more = e.o ? '<ul class="olist" hidden>' + e.o.map(function (o) { return '<li><a href="' + esc(o[1]) + '" target="_blank" rel="noopener">' + esc(o[2]) + '</a><span class="os">' + esc(o[0]) + '</span></li>'; }).join('') + '</ul>' : '';
     return '<li class="ur sr"><span class="ud">' + dd + '</span>' +
       '<span class="ic" style="--h:' + hue(i0) + '" title="' + esc(i0) + '">' + esc(AB[i0] || '他') + '</span>' +
-      '<span class="sb"><a class="un" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(e.t) + '</a>' +
+      '<span class="sb"><a class="un" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(e.t) + '</a><span class="ss">' + esc(short(e.s)) + '</span>' +
       more + '</span><span class="st' + (e.c ? '' : ' nc') + '"><span class="sn">' + esc(e.s) + '</span>' + (e.c ? '<button type="button" class="cn" aria-expanded="false" title="伝えた記事の数（押すと見出しを全部広げる）">' + e.c + '</button>' : '') + '</span></li>';
   }
   document.addEventListener('click', function (ev) {   // 青い件数を押すと、同じ話題の見出しを広げる・たたむ
