@@ -17,9 +17,8 @@
     var dd = tm ? '<span class="tm">' + esc(e.h || '—') + '</span>' + (e.d !== tm ? '<span class="left">昨日</span>' : '') : (e.h ? '<span class="hm">' + esc(e.h) + '</span>' : '') + (m ? +m[3] + '<small>' + WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + '</small>' : '<span class="dq">—</span>');   // 記事一覧：日付と、左の空きに小さく薄く時刻
     var more = e.o ? '<ul class="olist" hidden>' + e.o.map(function (o) { return '<li><a href="' + esc(o[1]) + '" target="_blank" rel="noopener">' + esc(o[2]) + '</a><span class="os">' + esc(o[0]) + '</span></li>'; }).join('') + '</ul>' : '';
     return '<li class="ur sr"><span class="ud">' + dd + '</span>' +
-      (tm ? '<span class="ic" style="--h:' + (short(e.s) === '共同' ? 200 : 30) + '" title="' + esc(e.s) + '">' + esc(short(e.s).slice(0, 1)) + '</span>'   // 今日の新着：欄がカテゴリなので、印は媒体名の1文字
-          : '<span class="ic" style="--h:' + hue(i0) + '" title="' + esc(i0) + '">' + esc(AB[i0] || '他') + '</span>') +
-      '<span class="sb"><a class="un" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(e.t) + '</a>' + (tm ? '' : '<span class="ss">' + esc(short(e.s)) + '</span>') +
+      '<span class="ic" style="--h:' + (short(e.s) === '共同' ? 200 : 30) + '" title="' + esc(e.s) + '">' + esc(short(e.s).slice(0, 1)) + '</span>' +   // 印は媒体名の1文字（今日の新着・記事一覧とも、2026-11-23）
+      '<span class="sb"><a class="un" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(e.t) + '</a>' +
       more + '</span><span class="st' + (e.c ? '' : ' nc') + '"><span class="sn">' + esc(e.s) + '</span>' + (e.c ? '<button type="button" class="cn" aria-expanded="false" title="伝えた記事の数（押すと見出しを全部広げる）">' + e.c + '</button>' : '') + '</span></li>';
   }
   document.addEventListener('click', function (ev) {   // 青い件数を押すと、同じ話題の見出しを広げる・たたむ
