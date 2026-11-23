@@ -52,6 +52,7 @@ for e in sorted(items, key=lambda e: (e['d'], e['h'], e['u'])):
     for c in clusters[-600:]:
         if abs(day(c[0]['d']) - dd) > 4: continue
         if e['s'] in {x['s'] for x in c[1]}: continue   # まとめるのは違うサイトの記事だけ
+        if ('首相動静' in e['t'] or '首相動静' in c[0]['t']) and nf(e['t']) != nf(c[0]['t']): continue   # 首相動静は見出しがまったく同じ記事とだけまとめる（日付の重なりだけでまとまるため、2026-11-23）
         if mark(e['t']) != mark(c[0]['t']) and mark(e['t']) and mark(c[0]['t']): continue
         sim = 2 * len(b & c[2]) / max(1, len(b) + len(c[2]))
         if br & c[3] and sim >= SAME_BR: sim = max(sim, SAME)
