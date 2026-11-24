@@ -25,7 +25,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">'
          # 半角の数字・英字・記号だけ BIZ UDゴシック（text= でその文字だけの字体にし、日本語は BIZ UDPゴシック に落ちる）
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&display=swap&text=%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~">')
-HUE = {'首相動静': 300, '世論調査': 150, '地方政治': 120, '国会': 30, '省庁': 340, '首相': 270, '政党': 200, '官房長官': 60, '外交': 100, '叙勲': 45, '閣僚': 160, '海外': 180, '分類なし': 250}
+HUE = {'首相動静': 300, '世論調査': 150, '地方政治': 120, '国会': 30, '省庁': 340, '首相': 270, '政党': 200, '官房長官': 60, '外交': 100, '叙勲': 45, '閣僚': 160, 'インタビュー': 320, '海外': 180, '分類なし': 250}
 GROUPS = NEWS['groups']
 
 from sitegenre import genre as sgenre, ORDER as GORDER
