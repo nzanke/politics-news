@@ -1,0 +1,14 @@
+## index.html
+  index.html：2,066 B（gzip 1,157 B）
+  style.css：28,038 B（gzip 7,023 B）
+  news.js：13,866 B（gzip 4,675 B）
+  newsall.json：53,889 B（gzip 12,759 B）
+  合計：97,859 B（gzip 25,614 B）／10Mbps での転送の目安（計算値）：20.5 ms
+  読み込み完了（ms）：302, 164, 137, 112, 155／中央値 155
+## search.html
+  search.html：5,584 B（gzip 2,233 B）
+  style.css：28,038 B（gzip 7,023 B）
+  news.js：13,866 B（gzip 4,675 B）
+  newsall.json：53,889 B（gzip 12,759 B）
+  合計：101,377 B（gzip 26,690 B）／10Mbps での転送の目安（計算値）：21.4 ms
+  読み込み完了（ms）：324, 243, 270, 192, 260／中央値 260

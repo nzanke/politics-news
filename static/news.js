@@ -28,15 +28,15 @@
   });
   // ---- 今日の新着（index.html）：今日の記事をジャンルごとに。今日の記事がまだなければ昨日の記事
   if ($('today')) {
-    fetch(window.NEWS).then(function (r) { return r.json(); }).then(function (j) {
+    fetch(window.RECENT || window.NEWS).then(function (r) { return r.json(); }).then(function (j) {   // 直近3日分だけのファイル（なければ全記事）
       (j.groups || []).forEach(function (x) { x[1].forEach(function (i) { GI[i] = x[0]; }); });   // 印の色
       var t = new Date(), y = new Date(t.getTime() - 864e5), items = j.items || [], day = ymd(t), yday = ymd(y);
       var td = items.filter(function (e) { return e.d === day || e.d === yday; });   // 今日と昨日の記事（新しい順）
       var gs = (window.GENRES || []).slice();
-      td.forEach(function (e) { if (gs.indexOf(e.j) < 0) gs.push(e.j); });
+      td.forEach(function (e) { if (gs.indexOf(e.g[0]) < 0) gs.push(e.g[0]); });
       var h = '';
       gs.forEach(function (g) {
-        var es = td.filter(function (e) { return e.j === g; }); if (!es.length) return;
+        var es = td.filter(function (e) { return e.g[0] === g; }); if (!es.length) return;
         h += '<section class="tsec"><h2 class="ug tg2">' + esc(g) + '<span class="n">' + es.length + ' 件</span></h2><ul class="ulist">' + es.map(function (e) { return row(e, day); }).join('') + '</ul></section>';
       });
       var md = function (d) { return (d.getMonth() + 1) + '月' + d.getDate() + '日・' + WD[d.getDay()]; };

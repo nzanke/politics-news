@@ -6,7 +6,7 @@
 - 重複を除く：同じリンク（正規化したもの）は1本。同じサイトで見出しがまったく同じ記事も、前後3日以内なら1本にする。
 - 同じ話題をまとめる：違うサイトの記事で、見出しの2文字ずつの組の重なりが 0.25 以上か、「」『』の中身（4文字以上）が同じで 0.12 以上重なれば1行にまとめる。同じ日の記事なら、「」『』の中身が同じだけでまとめる。前後4日以内。第2弾と第3弾、前編と後編などは分ける。
 大カテゴリは見出しの語と、RSS の説明文（政党）で決める（rules.py）。
-書き出すのは日付・時刻・見出し・リンク・サイト・大カテゴリ・ジャンル（説明文は data/rss.jsonl にだけ残す）。
+書き出すのは日付・時刻・見出し・リンク・サイト・大カテゴリ（今日の新着の欄は最初の大カテゴリ）（説明文は data/rss.jsonl にだけ残す）。
 """
 import datetime, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -35,7 +35,7 @@ for r in sorted(rows, key=lambda r: (r.get('d', ''), r.get('h', ''))):
     if dd is not None and r.get('d') and abs(day(r['d']) - dd) <= 3: continue
     if r.get('d'): SEEN_T[tk] = day(r['d'])
     if not keep(t, r.get('desc', ''), r.get('s', '')): continue
-    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': cats(t, r.get('desc', '')), 'j': genre(t, r.get('desc', ''))})
+    items.append({'d': r.get('d') or '', 'h': r.get('h') or '', 't': r['t'], 'u': r['u'], 's': r.get('s') or '', 'g': cats(t, r.get('desc', ''))})
 
 # ---- 同じ話題の記事を1行にまとめる
 def bigr(t):
@@ -70,12 +70,12 @@ for c in clusters:
     if len(g) > 1: g.discard('分類なし')   # まとめた記事のどれかが分類に入れば「分類なし」は外す
     if len(g) > 1: g.discard('外国')   # 「外国」はほかのカテゴリに入らないときだけ（行の単位でも）
     if '外国' in g: g.discard('外国'); g.add('海外')   # 外国は海外にまとめる（依頼者の判断、2026-11-20）
-    r['g'] = sorted(g, key=lambda x: CAT_ORDER.index(x) if x in CAT_ORDER else 99); r['j'] = r['g'][0]
+    r['g'] = sorted(g, key=lambda x: CAT_ORDER.index(x) if x in CAT_ORDER else 99)   # 今日の新着の欄は g[0]
     if len(es) > 1: r['o'] = [[x['s'], x['u'], x['t']] for x in es if x is not m]; r['c'] = len(es)
     out.append(r)
 items = sorted(out, key=lambda e: (e['d'], e['h'], e['u']), reverse=True)
 groups = [[c, [c]] for c in CAT_ORDER if any(c in e['g'] for e in items)]
-json.dump({'groups': groups, 'genres': [g for g in GENRE_ORDER if any(e['j'] == g for e in items)], 'items': items},
+json.dump({'groups': groups, 'genres': [g for g in GENRE_ORDER if any(e['g'][0] == g for e in items)], 'items': items},
           open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 from collections import Counter
 cn = Counter(x for e in items for x in e['g'])

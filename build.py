@@ -20,6 +20,12 @@ nj = json.dumps(NEWS, ensure_ascii=False, separators=(',', ':'))
 open(os.path.join(OUT, 'newsall.json'), 'w', encoding='utf-8').write(nj)
 V = lambda b: hashlib.sha1(b).hexdigest()[:8]
 CSS_V, NJS_V, NEWS_V = V(open(D('static', 'style.css'), 'rb').read()), V(open(D('static', 'news.js'), 'rb').read()), V(nj.encode())
+# 今日の新着（index.html）は今日と昨日の記事だけ使うので、直近3日分だけの小さなファイルを読む（全記事は増え続けるため）
+import datetime
+_since = (datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).date() - datetime.timedelta(days=2)).isoformat()
+rj = json.dumps({'items': [e for e in NEWS['items'] if e['d'] >= _since]}, ensure_ascii=False, separators=(',', ':'))
+open(os.path.join(OUT, 'recent.json'), 'w', encoding='utf-8').write(rj)
+RECENT_V = V(rj.encode())
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">'
@@ -79,5 +85,5 @@ page('search.html', f'記事一覧 | {SITE}', '政治のニュースを30分ご�
 # ---- 今日の新着（ジャンルごと。どの日を「今日」にするかは見る人の時計で決める）
 body = '''<div class="cbar"><p class="count" id="tcount"></p></div>
 <div id="today"></div>'''
-page('index.html', SITE, '政治のニュースを30分ごとに集め、今日の新着をジャンルごとに並べたページ', body, 'window.GENRES=' + json.dumps(NEWS.get('genres', []), ensure_ascii=False))
+page('index.html', SITE, '政治のニュースを30分ごとに集め、今日の新着をジャンルごとに並べたページ', body, 'window.RECENT="recent.json?v=' + RECENT_V + '";window.GENRES=' + json.dumps(NEWS.get('genres', []), ensure_ascii=False))
 print('組み立て', len(NEWS['items']), '件')
